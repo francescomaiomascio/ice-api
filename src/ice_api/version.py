@@ -1,8 +1,12 @@
-"""
-API VERSIONING.
+from __future__ import annotations
 
-Questa versione descrive la semantica dei contratti ICE,
-non la versione dell'applicazione.
-"""
+# ============================================================
+# ICE API VERSION
+# ============================================================
+# Versione dell'API (contratto), NON dell'app o del runtime.
+# Cambia solo quando il contratto rompe compatibilità.
+# ============================================================
 
-API_VERSION = "v1"
+__version__ = "1.0.0"
+
+API_VERSION = __version__

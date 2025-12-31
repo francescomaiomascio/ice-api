@@ -20,6 +20,12 @@ class ActionKind(str, Enum):
     PLAN = "plan"             # pianificazione
     GENERATION = "generation" # output generativo
 
+class ResultStatus(str, Enum):
+    SUCCESS = "success"
+    FAILED = "failed"
+    PARTIAL = "partial"
+    PENDING = "pending"
+
 
 class LifecyclePhase(str, Enum):
     PREBOOT = "preboot"
