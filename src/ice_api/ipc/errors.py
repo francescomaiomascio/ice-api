@@ -71,6 +71,16 @@ class AgentNotFoundError(ApiError):
         )
 
 
+class WorkspaceNotFoundError(ApiError):
+    code = "api.workspace.not_found"
+
+    def __init__(self, workspace_id: str):
+        super().__init__(
+            f"Workspace '{workspace_id}' non trovato.",
+            details={"workspace_id": workspace_id},
+        )
+
+
 # ============================================================================
 # VALIDATION ERRORS
 # ============================================================================
