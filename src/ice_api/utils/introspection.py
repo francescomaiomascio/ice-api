@@ -3,7 +3,29 @@ from __future__ import annotations
 from typing import Any, Dict, List
 
 from ice_api.actions.base import ActionSpec
-from ice_api.agents.spec import AgentSpec
+from ice_api.domains.base import Domain
+from ice_api.ipc.messages import MessageSpec
+from ice_api.lifecycle import LifecycleEvent
+
+
+# ============================================================================
+# DOMAIN INTROSPECTION
+# ============================================================================
+
+def describe_domain(domain: Domain) -> Dict[str, Any]:
+    """
+    Rappresentazione stabile di un Domain ICE-API.
+
+    Usata da:
+    - GUI (routing / panel binding)
+    - IDE (hint semantici)
+    """
+
+    return {
+        "name": domain.value,
+        "description": domain.description,
+        "ui_group": domain.ui_group,
+    }
 
 
 # ============================================================================
@@ -12,13 +34,11 @@ from ice_api.agents.spec import AgentSpec
 
 def describe_action(action: ActionSpec) -> Dict[str, Any]:
     """
-    Rappresentazione completa e stabile di una ActionSpec.
+    Rappresentazione completa e stabile di una ActionSpec ICE-API.
 
-    Usata da:
-    - GUI (form, pannelli)
-    - CLI (help)
-    - IDE (completions)
-    - LLM (tool description)
+    NOTA:
+    - owner_agent è una STRINGA
+    - ICE-API non conosce AgentSpec
     """
 
     return {
@@ -28,8 +48,8 @@ def describe_action(action: ActionSpec) -> Dict[str, Any]:
         "kind": action.kind.value,
         "version": action.version,
         "deprecated": action.deprecated,
-        "tags": list(action.tags),
-        "owner_agent": action.owner_agent,
+        "tags": sorted(action.tags),
+        "owner": action.owner,  # stringa logica (es: "planner-agent")
         "parameters": [
             {
                 "name": p.name,
@@ -65,70 +85,78 @@ def describe_action(action: ActionSpec) -> Dict[str, Any]:
 
 
 # ============================================================================
-# AGENT INTROSPECTION
+# IPC MESSAGE INTROSPECTION
 # ============================================================================
 
-def describe_agent(agent: AgentSpec) -> Dict[str, Any]:
+def describe_message(message: MessageSpec) -> Dict[str, Any]:
     """
-    Rappresentazione completa di un AgentSpec.
+    Descrizione formale di un messaggio IPC.
     """
 
     return {
-        "name": agent.name,
-        "description": agent.description,
-        "main_domain": agent.main_domain.value,
-        "actions": list(agent.actions),
-        "capabilities": list(agent.capabilities),
-        "metadata": dict(agent.metadata),
+        "name": message.name,
+        "direction": message.direction.value,
+        "payload_schema": message.payload_schema,
+        "response_schema": message.response_schema,
+        "version": message.version,
+        "deprecated": message.deprecated,
     }
 
 
 # ============================================================================
-# CATALOG INTROSPECTION
+# LIFECYCLE INTROSPECTION
 # ============================================================================
 
-def describe_catalog(
+def describe_lifecycle_event(event: LifecycleEvent) -> Dict[str, Any]:
+    """
+    Evento lifecycle (boot, shutdown, workspace-open, ecc.)
+    """
+
+    return {
+        "name": event.name,
+        "description": event.description,
+        "scope": event.scope,
+    }
+
+
+# ============================================================================
+# API SNAPSHOT
+# ============================================================================
+
+def describe_api(
     *,
+    domains: List[Domain],
     actions: List[ActionSpec],
-    agents: List[AgentSpec],
+    messages: List[MessageSpec],
+    lifecycle_events: List[LifecycleEvent],
 ) -> Dict[str, Any]:
     """
-    Snapshot completo dell'API ICE.
+    Snapshot completo dell'ICE-API.
 
-    È IL PAYLOAD che:
-    - la GUI carica all’avvio
-    - l’IDE usa per suggestion
-    - la CLI usa per help
-    - l’LLM usa per tool discovery
+    È IL CONTRATTO PUBBLICO del sistema.
     """
-
-    by_domain: Dict[str, List[str]] = {}
-    for action in actions:
-        by_domain.setdefault(action.domain.value, []).append(action.name)
-
-    # ordering deterministico
-    for domain in by_domain:
-        by_domain[domain].sort()
 
     return {
         "summary": {
+            "total_domains": len(domains),
             "total_actions": len(actions),
-            "total_agents": len(agents),
-            "domains": sorted(by_domain.keys()),
+            "total_messages": len(messages),
+            "total_lifecycle_events": len(lifecycle_events),
         },
-        "index": {
-            "by_domain": by_domain,
-            "by_agent": {
-                agent.name: sorted(agent.actions)
-                for agent in agents
-            },
+        "domains": {
+            d.value: describe_domain(d)
+            for d in domains
         },
         "actions": {
-            action.name: describe_action(action)
-            for action in actions
+            a.name: describe_action(a)
+            for a in actions
         },
-        "agents": {
-            agent.name: describe_agent(agent)
-            for agent in agents
+        "ipc_messages": {
+            m.name: describe_message(m)
+            for m in messages
+        },
+        "lifecycle": {
+            e.name: describe_lifecycle_event(e)
+            for e in lifecycle_events
         },
     }
