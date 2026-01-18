@@ -1,87 +1,182 @@
 # ICE API
+## Public Contract and Interaction Boundary of the ICE Ecosystem
 
-[![ICE Ecosystem](https://img.shields.io/badge/ICE-Ecosystem-8FB9FF?style=flat)](#)
-[![Docs](https://img.shields.io/badge/docs-ICE%20Docs-8FB9FF?style=flat)](https://github.com/francescomaiomascio/ice-docs)
-[![Status](https://img.shields.io/badge/status-active%20development-6B7280?style=flat)](#)
-[![Language](https://img.shields.io/badge/python-3.x-111827?style=flat)](#)
-[![License](https://img.shields.io/badge/license-MIT-7A7CFF?style=flat)](#)
+ICE API defines the **public contract layer** of the ICE ecosystem.
 
-ICE API defines the **public interface layer** of the ICE ecosystem.
-
-It provides stable contracts, schemas, and interaction models used by
-applications, agents, UIs, and runtimes to communicate with ICE systems in a
-controlled and versioned way.
+It establishes **what may be expressed, exchanged, and interpreted**
+between ICE components and external systems,
+under the constraints defined by **ICE Foundation**.
 
 ICE API does not execute logic.
-It defines **what can be said**, **what can be asked**, and **how systems interact**.
+It does not infer intent.
+It does not grant authority.
+
+It defines **what is structurally allowed to be communicated**.
 
 ---
 
-## Core Responsibilities
+## Foundation Dependency
 
-ICE API is responsible for:
+This project derives its assumptions and constraints from  
+**ICE Foundation v1.0.0**.
 
-- Defining public actions and agent specifications
-- Modeling shared domains and system concepts
-- Providing IPC message formats and event schemas
-- Validating payloads and contracts
-- Exposing lifecycle and interaction primitives
-- Acting as the canonical boundary between ICE subsystems
+In particular, it is bound by:
 
----
+- Explicit Authority and Control Separation (Axiom A-002)
+- State as a Derived Artifact (Axiom A-003)
+- Structural Traceability (Invariant I-001)
+- Governance (Invariant I-003)
 
-## Architectural Scope
-
-ICE API sits at the **boundary layer** of the ICE ecosystem.
-
-It does not:
-- orchestrate execution
-- manage memory or cognition
-- implement business logic
-- control system state
-
-It does:
-- define interaction contracts
-- standardize communication
-- enforce schema correctness
-- decouple producers and consumers
+ICE API is a boundary, not a source of truth.
 
 ---
 
-## Design Principles
+## What ICE API Is
 
-- Explicit and versioned contracts
-- Schema-first validation
-- Clear separation between domains
-- IPC as a first-class concern
-- Backward compatibility by design
-- APIs as boundaries, not conveniences
+ICE API is:
+
+- a **canonical contract definition layer**
+- a **schema authority for interaction**
+- a **boundary between execution domains**
+- a **stability surface for ICE systems**
+- a **decoupling mechanism between producers and consumers**
+
+It defines **what may be said and asked**,
+not **what must be done**.
 
 ---
 
-## Usage
+## What ICE API Is Not
 
-ICE API is not a service and not an application.
+ICE API is **not**:
 
-It is consumed by:
+- a runtime service
+- an execution engine
+- a business logic layer
+- an orchestration system
+- an authority or policy layer
+
+APIs do not decide.
+APIs do not execute.
+APIs do not authorize.
+
+They constrain interaction.
+
+---
+
+## Architectural Role
+
+ICE API sits at the **interaction boundary** of the ICE ecosystem.
+
+It connects:
+
 - ICE Runtime
 - ICE Engine
-- ICE Studio
 - ICE AI
-- External tools and adapters
+- ICE Studio
+- external tools, adapters, and integrations
 
-All ICE components communicate **through** this layer, not around it.
+No ICE component communicates around this layer.
+All interaction must pass **through** explicit contracts.
+
+This is intentional.
+
+---
+
+## Contract Model
+
+ICE API defines:
+
+- action and command schemas
+- event and message formats
+- domain object representations
+- lifecycle and interaction primitives
+- versioned and evolvable contracts
+
+All contracts are:
+
+- explicit
+- inspectable
+- versioned
+- traceable
+
+Implicit interaction is forbidden.
+
+---
+
+## Authority and Execution Separation
+
+ICE API does **not** grant authority.
+
+- Receiving a request does not imply permission.
+- Emitting a command does not cause execution.
+- Producing a payload does not justify action.
+
+Authority and execution are handled downstream
+by Runtime and Engine layers,
+under Foundation-defined invariants.
+
+---
+
+## Versioning and Evolution
+
+ICE API is designed to evolve **without semantic drift**.
+
+- Contracts are versioned explicitly
+- Changes are additive whenever possible
+- Breaking changes are deliberate and explicit
+- Compatibility is a structural concern
+
+Evolution is allowed.
+Ambiguity is not.
+
+---
+
+## Repository Scope
+
+This repository contains:
+
+- canonical API schemas
+- interaction and event definitions
+- validation rules
+- contract documentation
+
+It explicitly does **not** contain:
+
+- runtime execution logic
+- orchestration code
+- persistence layers
+- UI components
+
+---
+
+## Canonical Status
+
+ICE API is **normative at the interaction boundary**.
+
+Any ICE-compliant system must:
+
+- conform to these contracts
+- respect their semantics
+- not reinterpret them implicitly
+
+If communication violates these definitions,
+the system is incorrect by construction.
 
 ---
 
 ## Status
 
-This project is under **active development**.
-Public contracts aim to remain stable; extensions are additive.
+ICE API is under **active development**.
+
+Contracts are expected to stabilize
+as higher-level ICE systems mature.
 
 ---
 
-## License
+## Notes
 
-This project is licensed under the terms of the MIT license.
-See the `LICENSE` file for details.
+Execution is power.
+
+ICE API exists to ensure that  
+**power never enters the system through ambiguity**.
